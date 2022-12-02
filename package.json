@@ -1,0 +1,31 @@
+{
+  "name": "valda",
+  "version": "0.0.1",
+  "description": "JS library for fast short easy analyse, assert, check, parse, validate input fields and json responses.",
+  "main": "lib/valda.min.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "validate",
+    "parser",
+    "check",
+    "assert",
+    "fast",
+    "easy",
+    "json",
+    "field",
+    "valda"
+  ],
+  "author": "<www.telemok.com@gmail.com> https://github.com/Telemok",
+  "license": "Apache 2.0",
+  "type": "module",
+  "homepage": "https://github.com/Telemok/valda",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Telemok/valda.git"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
