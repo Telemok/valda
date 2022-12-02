@@ -26,6 +26,7 @@
     "url": "https://github.com/Telemok/valda.git"
   },
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "registry": "https://npm.pkg.github.com"
   }
 }
