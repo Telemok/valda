@@ -1,0 +1,176 @@
+<html>
+
+<div style="background:red" id="divError"></div>
+<table id="pre" border="1"><tbody id="tbody"></tbody></table>
+
+<SCRIPT type="module">
+	import { valda } from "http://127.0.0.1:8080/lib/valda.min.js"
+
+	//import { valda as valdaMin } from "http://127.0.0.1:8080/lib/valda.js"
+	//import { valda as valdaVerbose } from "http://127.0.0.1:8080/lib/valda.verbose.js"
+	//const valda = { ...valdaVerbose, ...valdaMin };
+
+
+	function parseStudents(json, count, sort = "AGE") {
+		json = valda.string.assert(json); /* json must be string or throw */
+		count = valda.integerMin.assert(count, 1); /* count must be 16 <= integer or throw */
+		sort = valda.enum.assert(sort, ['AGE', 'MARKS', 'NAME']); /* sort must be 'AGE', 'MARKS', 'NAME' or throw */
+
+		let obj = JSON.parse(json); /* json must be json or throw */
+		let timestamp = valda.number.parse(obj, 'timestamp'); /* json must be number or throw */
+		let data = valda.array.parse(obj, 'data'); /* data must be array or throw */
+		//for (let line of Object.values(data)) {
+		for (let i = 0; i < count && i < data.length; i++)
+		{
+			let line = data[i];
+			let age = valda.integerMinMax.parse(line, 'age', 16, 150); /* age must be  16 <= integer <= 150 or throw */
+			let name = valda.string.parse(line, 'name'); /* name must be sting or throw */
+			if (name.length > 100)
+				throw new Error(`Wrong student name length (${name.length}) > 100`);
+			let averageMark = valda.numberMinMax.parse(line, 'averageMark', 0, 10);
+			let studentId = valda.integerMin.parse(line, 'studentId', 1);
+			console.log(`Parsed student #${studentId} with name "${name}" age (${age}) and average mark (${averageMark})! Timestamp is: ${timestamp}.`)
+		}
+	}
+
+	let exampleObject = {
+		timestamp: 1600000000,
+		data: [{
+			age: 20,
+			name: "John Smith",
+			averageMark: 7.7,
+			studentId: 0x6354,
+		},{
+			age: 19,
+			name: "Bogdan Hmelnitskiy",
+			averageMark: 8.7,
+			studentId: 0x1596,
+		},]
+	};
+
+	parseStudents(JSON.stringify(exampleObject), 2)
+
+	function test1(s) {
+		let result = eval(s);
+		//pre.insertAdjacentHTML('beforebegin', `<TR><TD>${s}</TD><TD>${eval(s)}</TD></TR>`);
+		let tr = document.createElement("tr");
+		if (result.cause)
+			tr.style.color = "#700";
+		else
+			tr.style.color = "#070";
+		let td1 = document.createElement("td");
+		td1.innerText = s;
+		tr.appendChild(td1);
+		let td2 = document.createElement("td");
+		td2.innerText = result.cause;
+		tr.appendChild(td2);
+		let td3 = document.createElement("td");
+		td3.innerText = result.name;
+		tr.appendChild(td3);
+		let td4 = document.createElement("td");
+		td4.innerText = result.value;
+		tr.appendChild(td4);
+		tbody.appendChild(tr);
+	}
+	try {
+		test1(`typeof null`)
+		test1(`null===undefined`)
+		test1(`valda.defined.analyse();`)
+		test1(`valda.defined.analyse(undefined);`)
+		test1(`valda.defined.analyse(null);`)
+		test1(`valda.defined.analyse(NaN);`)
+		test1(`valda.defined.analyse(5);`)
+
+		test1(`valda.boolean.analyse();`)
+		test1(`valda.boolean.analyse("true");`)
+		test1(`valda.boolean.analyse("True");`)
+		test1(`valda.boolean.analyse(" true");`)
+		test1(`valda.boolean.analyse(true);`)
+		test1(`valda.boolean.analyse(2);`)
+		test1(`valda.boolean.analyse(null);`)
+		test1(`valda.boolean.analyse(NaN);`)
+
+		test1(`valda.number.analyse();`)
+		test1(`valda.number.analyse(4);`)
+		test1(`valda.number.analyse("NaN");`)
+		test1(`valda.number.analyse(NaN);`)
+		test1(`valda.number.analyse(null);`)
+		test1(`valda.number.analyse("-444.44");`)
+		test1(`valda.number.analyse("True");`)
+		test1(`valda.number.analyse("true");`)
+		test1(`valda.number.analyse(true);`)
+		test1(`valda.number.analyse("Number.NEGATIVE_INFINITY");`)
+		test1(`valda.number.analyse(Number.NEGATIVE_INFINITY);`)
+
+		test1(`valda.numberMinMax.analyse(Number.NEGATIVE_INFINITY);`)
+		test1(`valda.numberMin.analyse(Number.NEGATIVE_INFINITY);`)
+		test1(`valda.numberMax.analyse(Number.NEGATIVE_INFINITY);`)
+
+		test1(`valda.integerMinMax.analyse(10.3);`)
+		test1(`valda.integerMinMax.analyse("10");`)
+		test1(`valda.integerMinMax.analyse("NaN");`)
+		test1(`valda.integerMinMax.analyse(NaN);`)
+		test1(`valda.integer.analyse(NaN);`)
+		test1(`valda.integerMin.analyse(4,3);`)
+		test1(`valda.integerMin.analyse(4,3.9);`)
+		test1(`valda.integerMin.analyse(4,4);`)
+		test1(`valda.integerMin.analyse(4,4.1);`)
+		test1(`valda.integerMin.analyse(4,5);`)
+		test1(`valda.integerMax.analyse(Number.MAX_SAFE_INTEGER,Number.MAX_SAFE_INTEGER);`)
+
+		test1(`valda.object.analyse();`)
+		test1(`valda.object.analyse({});`)
+		test1(`valda.object.analyse([]);`)
+		test1(`valda.object.analyse(NaN);`)
+		test1(`valda.object.analyse(null);`)
+		test1(`valda.object.analyse(Array);`)
+
+		test1(`valda.array.analyse({});`)
+		test1(`valda.array.analyse(Array);`)
+		test1(`valda.array.analyse(new Array());`)
+		test1(`valda.array.analyse([]);`)
+		test1(`valda.array.analyse(new Uint8Array(3));`)
+
+		test1(`valda.uint8Array.analyse([]);`)
+		test1(`valda.uint8Array.analyse(new Uint8Array(3));`)
+		test1(`valda.uint8Array.analyse(new Uint16Array(3));`)
+		test1(`valda.uint8Array.analyse(new DataView(new ArrayBuffer()));`)
+
+		test1(`valda.string.analyse()`)
+		test1(`valda.string.analyse("")`)
+		test1(`valda.string.analyse("qwe")`)
+		test1(`valda.string.analyse("5")`)
+		test1(`valda.string.analyse(5)`)
+
+		test1(`valda.function.analyse(()=>{})`)
+		test1(`valda.function.analyse(class {})`)
+
+		test1(`valda.extends.analyse(new Uint8Array, Uint8Array)`)
+		test1(`valda.extends.analyse(Uint8Array, Uint8Array)`)
+		test1(`valda.extends.analyse(class Ui extends Uint8Array{}, Uint8Array)`)
+		test1(`valda.instance.analyse(new Uint8Array(), Uint8Array)`)
+
+		test1(`valda.varName.analyse("asd")`)
+		test1(`valda.varName.analyse("4")`)
+		test1(`valda.varName.analyse("4aSd")`)
+		test1(`valda.varName.analyse("aSd4")`)
+
+		test1(`valda.hex.analyse("ABC")`)
+		test1(`valda.hex.analyse("ABCD")`)
+		test1(`valda.hex.analyse("")`)
+		test1(`valda.hex.analyse()`)
+		test1(`valda.hex.analyse(55)`)
+		test1(`valda.hexFixed.analyse("ABCD")`)
+		test1(`valda.hexFixed.analyse("ABCD",1)`)
+		test1(`valda.hexFixed.analyse("ABCD",2)`)
+		test1(`valda.hexFixed.analyse("ABCD",4)`)
+
+		test1(`valda.element.analyse("ABCD")`)
+		test1(`valda.element.analyse({elem: 4})`)
+		test1(`valda.element.analyse({baseURI: document.body.baseURI})`)
+		test1(`valda.element.analyse(tbody)`)
+
+	} catch (err) { divError.innerText = err; }
+
+</SCRIPT>
+</html>

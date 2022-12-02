@@ -1,0 +1,1 @@
+npx minify lib/valda.js > lib/valda.min.js
