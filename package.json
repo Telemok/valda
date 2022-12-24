@@ -1,10 +1,10 @@
 {
-  "name": "valda",
-  "version": "0.0.1",
-  "description": "JS library for fast short easy analyse, assert, check, parse, validate input fields and json responses.",
+  "name": "@Telemok/valda",
+  "version": "0.0.2",
+  "description": "Javascript ES6 library for fast short easy analyse, assert, check, parse, validate input fields and json responses.",
   "main": "lib/valda.min.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node test/test.js"
   },
   "keywords": [
     "validate",
@@ -18,7 +18,7 @@
     "valda"
   ],
   "author": "<www.telemok.com@gmail.com> https://github.com/Telemok",
-  "license": "Apache 2.0",
+  "license": "Apache-2.0",
   "type": "module",
   "homepage": "https://github.com/Telemok/valda",
   "repository": {
@@ -27,6 +27,10 @@
   },
   "publishConfig": {
     "access": "public",
-    "registry": "https://npm.pkg.github.com"
+    "registry": "https://npm.pkg.github.com/",
+    "name": "valda"
+  },
+  "dependencies": {
+    "np": "^7.6.2"
   }
 }

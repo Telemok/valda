@@ -1,6 +1,6 @@
 # valda (VALiDAtor)
 
-[valda] https://github.com/Telemok/valda is a JavaScript library for fast short easy analyse, assert, check, parse, validate input fields and json responses.
+[valda] https://github.com/Telemok/valda is a JavaScript ES6 library for fast short easy analyse, assert, check, parse, validate input fields and json responses.
 
 ## Features
 

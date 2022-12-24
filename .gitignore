@@ -2,3 +2,5 @@
 /.idea/modules.xml
 /.idea/valda.iml
 /.idea
+.npmrc
+.gitignore
